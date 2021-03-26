@@ -7,6 +7,10 @@ changed by: Oliver Cordes 2021-03-25
 
 import rumps
 
+from AppKit import NSMutableParagraphStyle, NSCenterTextAlignment, NSLineBreakByTruncatingMiddle, NSFontAttributeName, \
+    NSFont, NSForegroundColorAttributeName, NSColor, NSParagraphStyleAttributeName, NSAttributedString, \
+    NSString, NSTextTab, NSRightTextAlignment, NSSizeFromString
+
 from helper import isDarkMode
 
 from vpn import list_of_vpn_connections
@@ -20,6 +24,33 @@ def callback_template(name, func):
         func(name, sender)
 
     return callback
+
+def format_string(s, size):
+    paragraph = NSMutableParagraphStyle.alloc().init()
+    #paragraph.setAlignment_(NSCenterTextAlignment)
+    #paragraph.setLineBreakMode_(NSLineBreakByTruncatingMiddle)
+    tabstop = NSTextTab.alloc().initWithTextAlignment_location_options_(NSRightTextAlignment, size*1.2, None)
+    paragraph.setTabStops_([tabstop])
+    attributes = {
+        #NSFontAttributeName: NSFont.systemFontOfSize_(10.0),
+        #NSForegroundColorAttributeName: NSColor.colorWithCalibratedRed_green_blue_alpha_(.22, .22, .27, 1.0),
+        NSParagraphStyleAttributeName: paragraph,
+    }
+    text = NSAttributedString.alloc().initWithString_attributes_(s, attributes)
+
+    print(text.size())
+
+    return text
+
+
+def string_size_on_screen(s):
+    paragraph = NSMutableParagraphStyle.alloc().init()
+    attributes = {
+        NSParagraphStyleAttributeName: paragraph,
+    }
+    text = NSAttributedString.alloc().initWithString_attributes_(s, attributes)
+
+    return text.size().width
 
 
 class MacVPNWatcherApp(object):
@@ -36,13 +67,18 @@ class MacVPNWatcherApp(object):
         self._menu_items = {}
         self.update_menu()
 
-
     def update_menu(self):
         conns = list_of_vpn_connections()
         # add connections from VPN list
+        maxlen = max([string_size_on_screen(f'{i} (Disconnected)') for i in conns.keys()])
+        print(maxlen)
         for conn in sorted(conns.keys()):
             if conn not in self._connections:
-                menuitem = rumps.MenuItem(conn, callback=callback_template(conn, self.clicked_connection))
+                title = conn
+                atitle = format_string(f'{conn}\t({conns[conn]["status"]})', maxlen)
+                menuitem = rumps.MenuItem(title,
+                    callback=callback_template(conn, self.clicked_connection))
+                menuitem._menuitem.setAttributedTitle_(atitle)
                 #menuitem = rumps.MenuItem(conn, callback=self.click)
                 self._menu_items[conn] = menuitem
                 self._connections[conn] = conns[conn]
@@ -54,7 +90,9 @@ class MacVPNWatcherApp(object):
 
         print(self._connections)
 
-        self.app.menu = [self._menu_items[i] for i in self._menu_items]
+        #self._slider = rumps.SliderMenuItem(dimensions=(180, 30))
+        self.app.menu = [self._menu_items[i] for i in self._menu_items] + [rumps.separator]#+ [self._slider]
+
 
 
     def click(self, sender):
