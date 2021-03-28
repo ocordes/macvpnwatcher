@@ -2,7 +2,7 @@
 src/vpn.py
 
 written by: Oliver Cordes 2021-03-24
-changed by: Oliver Cordes 2021-03-25
+changed by: Oliver Cordes 2021-03-28
 """
 
 import re
@@ -35,6 +35,16 @@ def list_of_vpn_connections():
 
 def status_vpn_connection(name):
     result = execute_command(f'scutil --nc status {name}')
+
+
+def disconnect_vpn(name):
+    result = execute_command(f'scutil --nc stop {name}')
+    #print(result)
+
+
+def connect_vpn(name):
+    result = execute_command(f'scutil --nc start {name}')
+    #print(result)
 
 
 

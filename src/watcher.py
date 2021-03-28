@@ -2,8 +2,11 @@
 src/watcher.py
 
 written by: Oliver Cordes 2021-03-23
-changed by: Oliver Cordes 2021-03-25
+changed by: Oliver Cordes 2021-03-28
 """
+
+import os, sys
+import logging
 
 import rumps
 
@@ -13,9 +16,13 @@ from AppKit import NSMutableParagraphStyle, NSCenterTextAlignment, NSLineBreakBy
 
 from helper import isDarkMode
 
-from vpn import list_of_vpn_connections
+from vpn import list_of_vpn_connections, connect_vpn, disconnect_vpn
 
-rumps.debug_mode(True)
+
+AppName = 'MacVPNWatcher'
+
+
+#rumps.debug_mode(True)
 
 # mimik a callback_template to feed the connection name 
 # as a parameter
@@ -38,7 +45,7 @@ def format_string(s, size):
     }
     text = NSAttributedString.alloc().initWithString_attributes_(s, attributes)
 
-    print(text.size())
+    #print(text.size())
 
     return text
 
@@ -61,38 +68,72 @@ class MacVPNWatcherApp(object):
             icon='icons/appicon-dark.icns'
         else:
             icon='icons/appicon.icns'
-        self.app = rumps.App('MacVPNWatcher', icon=icon)
+        self.app = rumps.App(AppName, icon=icon)
 
         self._connections = {}
         self._menu_items = {}
-        self.update_menu()
+        self._menu_maxlen = 0
+        self.generate_menu()
+        self._is_connected = None
 
-    def update_menu(self):
+        self._app_supportdir = rumps.application_support(AppName)
+
+        logging.basicConfig(level=logging.DEBUG, 
+                            datefmt='%Y-%m-%d %H:%M:%S',
+                            filename=os.path.join(self._app_supportdir, 'app.log'),
+                            format='%(asctime)s %(levelname)s - %(message)s'
+                            )
+        logging.debug('App started...')
+
+        # setup the watch timer
+        self.timer = rumps.Timer(self.check_status, 5)
+        self.timer.start()
+
+
+    def generate_menu(self):
         conns = list_of_vpn_connections()
-        # add connections from VPN list
-        maxlen = max([string_size_on_screen(f'{i} (Disconnected)') for i in conns.keys()])
-        print(maxlen)
+        # add connections from VPN list                      
+        self._menu_maxlen = max([string_size_on_screen(f'{i} (Disconnected)') for i in conns.keys()])
         for conn in sorted(conns.keys()):
             if conn not in self._connections:
                 title = conn
-                atitle = format_string(f'{conn}\t({conns[conn]["status"]})', maxlen)
+                atitle = format_string(f'{conn}\t({conns[conn]["status"]})', self._menu_maxlen)
                 menuitem = rumps.MenuItem(title,
                     callback=callback_template(conn, self.clicked_connection))
                 menuitem._menuitem.setAttributedTitle_(atitle)
-                #menuitem = rumps.MenuItem(conn, callback=self.click)
                 self._menu_items[conn] = menuitem
                 self._connections[conn] = conns[conn]
+
+                # remember the item for which the connection is connected
+                if conns[conn]['status'] == 'Connected':
+                    self._is_connected = conn
+
 
         # look for removed connections
         for conn in self._connections:
             if conn not in conns:
                 self._connections.pop(conn)
 
-        print(self._connections)
-
         #self._slider = rumps.SliderMenuItem(dimensions=(180, 30))
         self.app.menu = [self._menu_items[i] for i in self._menu_items] + [rumps.separator]#+ [self._slider]
 
+
+    def update_menu(self):
+        conns = list_of_vpn_connections()
+        for conn in conns:
+            if conn in self._connections:
+                if self._connections[conn]['status'] == 'Connected':
+                    self._is_connected = conn
+                if self._connections[conn]['status'] != conns[conn]['status']:
+                    # status has changed
+                    # update the internal connection data
+                    self._connections[conn] = conns[conn]
+                    # update the menu item
+                    menuitem = self._menu_items[conn]
+                    atitle = format_string(
+                        f'{conn}\t({conns[conn]["status"]})', self._menu_maxlen)
+                    menuitem._menuitem.setAttributedTitle_(atitle)
+                    logging.info(f'Status changed: {conn} -> {conns[conn]["status"]}')
 
 
     def click(self, sender):
@@ -101,9 +142,25 @@ class MacVPNWatcherApp(object):
 
 
     def clicked_connection(self, name, sender):
-        print('clicked:', name)
+        #print('clicked:', name)
+        if name in self._connections:
+            if self._connections[name]['status'] == 'Connected':
+                logging.info(f'Disconnecting {name} ...')
+                disconnect_vpn(name)
+            else:
+                if self._is_connected:
+                    logging.info(f'Disconnecting {self._is_connected} ...')
+                    disconnect_vpn(self._is_connected)
+                logging.info(f'Connecting {name} ...')
+                connect_vpn(name)
+
+
+    def check_status(self, sender):
+        #logging.debug('check_status')
+        self.update_menu()
 
 
     def run(self):
         self.app.run()
+
 
