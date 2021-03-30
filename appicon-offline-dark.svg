@@ -14,7 +14,7 @@
    height="512.0px"
    width="512.0px"
    inkscape:version="1.0 (4035a4f, 2020-05-01)"
-   sodipodi:docname="appicon-dark.svg">
+   sodipodi:docname="appicon-offline-dark.svg">
   <defs
      id="defs1450">
     <linearGradient
@@ -60,8 +60,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.07"
-     inkscape:cx="302.80374"
-     inkscape:cy="289.82117"
+     inkscape:cx="151.86916"
+     inkscape:cy="271.12958"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      inkscape:document-rotation="0"
@@ -92,32 +92,32 @@
      inkscape:groupmode="layer"
      id="layer1">
     <circle
-       style="fill:none;stroke:#00ff00;stroke-width:15.11811024;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:none;stroke:#ff0000;stroke-width:15.11811024;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path2027"
        cx="289.53271"
        cy="210.3271"
        r="180" />
     <ellipse
-       style="fill:none;stroke:#00ff00;stroke-width:15.11811024;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:none;stroke:#ff0000;stroke-width:15.11811024;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;fill-opacity:1"
        id="path2065"
        cx="287.99066"
        cy="210.00002"
        rx="90"
        ry="180" />
     <path
-       style="fill:none;stroke:#00ff00;stroke-width:15.11811024;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:none;stroke:#ff0000;stroke-width:15.11811024;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="M 290,390 V 30"
        id="path2071" />
     <path
-       style="fill:#000000;stroke:#00ff00;stroke-width:15.11811024;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none;fill-opacity:1"
+       style="fill:#000000;stroke:#ff0000;stroke-width:15.11811024;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none;fill-opacity:1"
        d="M 110,210 H 470"
        id="path2073" />
     <path
-       style="fill:none;stroke:#00ff00;stroke-width:15.11811024;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       style="fill:none;stroke:#ff0000;stroke-width:15.11811024;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
        d="M 130,130 H 450"
        id="path2075" />
     <path
-       style="fill:none;stroke:#00ff00;stroke-width:15.11811024;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       style="fill:none;stroke:#ff0000;stroke-width:15.11811024;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
        d="m 130,290 c 40,0 320,0 320,0"
        id="path2077" />
     <text

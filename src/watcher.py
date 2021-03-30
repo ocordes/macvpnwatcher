@@ -21,7 +21,8 @@ from vpn import list_of_vpn_connections, connect_vpn, disconnect_vpn
 
 
 AppName = 'MacVPNWatcher'
-sleep_timeout_trigger = 60
+sleep_timeout_trigger  = 60
+sleep_reaction_trigger = 60
 
 #rumps.debug_mode(True)
 
@@ -61,6 +62,28 @@ def string_size_on_screen(s):
     return text.size().width
 
 
+class Event(object):
+    def __init__(self):
+        self._state = False
+        self._time  = 0
+
+    @property
+    def state(self):
+        return self._state
+
+    @state.setter
+    def state(self, val):
+        self._state = val
+        if val:
+            self._time = time.time()
+        else:
+            self._time = 0
+
+    def changed(self):
+        return time.time() - self._time
+
+
+
 class MacVPNWatcherApp(object):
     def __init__(self):
         #self.app = rumps.App('MacVPNWatcher', '🍅')
@@ -71,13 +94,21 @@ class MacVPNWatcherApp(object):
             icon='icons/appicon.icns'
         self.app = rumps.App(AppName, icon=icon)
 
+        # internal variables
         self._connections = {}
         self._menu_items = {}
         self._menu_maxlen = 0
-        self.generate_menu()
-        self._is_connected = None
+        #self._is_connected = None
         self._trigger_action = False
         self._last_checked = 0
+        #self._sleep_detected = False
+
+        self._last_connection = None
+        self._ev_connected = Event()
+        self._ev_awake = Event()
+
+        # generate the main menu
+        self.generate_menu()
 
         self._app_supportdir = rumps.application_support(AppName)
 
@@ -110,6 +141,8 @@ class MacVPNWatcherApp(object):
                 # remember the item for which the connection is connected
                 if conns[conn]['status'] == 'Connected':
                     self._is_connected = conn
+                    self._ev_connected.state = True
+                    self._last_connection = conn
 
 
         # look for removed connections
@@ -120,19 +153,35 @@ class MacVPNWatcherApp(object):
         #self._slider = rumps.SliderMenuItem(dimensions=(180, 30))
         self.app.menu = [self._menu_items[i] for i in self._menu_items] + [rumps.separator]#+ [self._slider]
 
+        # update the icon
+        self.update_icon()
+
 
     def update_menu(self):
         timenow = time.time()
         timediff = timenow - self._last_checked
-        if (timediff > sleep_timeout_trigger) and (self._last_checked != 0):
+        sleep_detected = (timediff > sleep_timeout_trigger) and (self._last_checked != 0)
+        if sleep_detected:
             logging.info(f'Sleep > {timediff} seconds detected!')
+            #self._sleep_detected = sleep_detected
+            self._ev_awake.state = True
+            
         conns = list_of_vpn_connections()
-        was_connected = self._is_connected
-        self._is_connected
+
+        # save the variable
+        was_connected = self._ev_connected.state
+
+        # nothing is connected
+        self._ev_connected.state = False
         for conn in conns:
             if conn in self._connections:
-                if self._connections[conn]['status'] == 'Connected':
-                    self._is_connected = conn
+                # change the variables if something is connected
+                if conns[conn]['status'] == 'Connected':
+                    #self._is_connected = conn
+                    self._ev_connected.state = True
+                    self._last_connection = conn
+
+                # has a connection changed?
                 if self._connections[conn]['status'] != conns[conn]['status']:
                     # status has changed
                     # update the internal connection data
@@ -147,15 +196,60 @@ class MacVPNWatcherApp(object):
                     if self._trigger_action:
                         if conns[conn]["status"] in ('Connected', 'Disconnected'):
                             self._trigger_action = False
-                    else:
-                        logging.warning('VPN status has changed without app trigger!')
-                        if (was_connected == conn) and (conns[conn]["status"] == 'Disconnected'):
-                            logging.warning(f'VPN connection {conn} was interrupted!')
+                            #self._sleep_detected = False
+                        if conns[conn]['status'] == 'Disconnected' and self._last_connection == conn:
+                            self._last_connection = None
+                    #else:
+                    #    logging.warning('VPN status has changed without app trigger!')
+                    #    if (was_connected == conn) and (conns[conn]["status"] == 'Disconnected'):
+                    #        logging.warning(f'VPN connection {conn} was interrupted!')
+                    #        if self._sleep_detected:
+                    #            logging.info(f'Want to reestablish connection for {conn}!')
+                    #            self._sleep_detected = False
+                    #            # reconnect the VPN
+                    #            connect_vpn(conn)
+                    #            self._trigger_action = True
+
+
+        # so the status is:
+        # self._last_connection has the old connection
+        # self._ev_connected.state shows if connected or not
+        if not self._ev_connected.state:
+            if self._last_connection and (conns[self._last_connection]['status'] == 'Disconnected'):
+                # a connection was interrupted
+                logging.warning(f'VPN connection {conn} was interrupted!')
+                if self._ev_awake.state and (self._ev_awake.changed < sleep_reaction_trigger):
+                    # was there an awake event 
+                    logging.info(f'Want to reestablish connection for {conn}!')
+                    # reconnect
+                    connect_vpn(conn)
+                    self._trigger_action = True
+
+        # clear the awake event
+        if self._ev_awake.state and (self._ev_awake.changed >= sleep_reaction_trigger):
+            self._ev_awake.state = False
+
+        # update icons if necessary
+        #logging.info(f'{self._ev_connected.state} vs. {was_connected}')
+        if self._ev_connected.state != was_connected:
+            logging.info(f'Updating icons ...')
+            self.update_icon()
+
 
         self._last_checked = timenow
 
 
-                    
+    def update_icon(self):
+        if self._ev_connected.state:
+            if isDarkMode:
+                self.app.icon = 'icons/appicon-dark.icns'
+            else:
+                self.app.icon = 'icons/appicon.icns'
+        else:
+            if isDarkMode:
+                self.app.icon = 'icons/appicon-offline-dark.icns'
+            else:
+                self.app.icon = 'icons/appicon-offline.icns'
 
 
     def click(self, sender):
@@ -170,9 +264,9 @@ class MacVPNWatcherApp(object):
                 logging.info(f'Disconnecting {name} ...')
                 disconnect_vpn(name)
             else:
-                if self._is_connected:
-                    logging.info(f'Disconnecting {self._is_connected} ...')
-                    disconnect_vpn(self._is_connected)
+                if self._ev_connected.state:
+                    logging.info(f'Disconnecting {self._last_connection} ...')
+                    disconnect_vpn(self._last_connection)
                 logging.info(f'Connecting {name} ...')
                 connect_vpn(name)
         self._trigger_action = True

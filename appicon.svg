@@ -8,59 +8,59 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   id="SVGRoot"
-   version="1.1"
-   viewBox="0 0 512.0 512.0"
-   height="512.0px"
-   width="512.0px"
+   sodipodi:docname="appicon.svg"
    inkscape:version="1.0 (4035a4f, 2020-05-01)"
-   sodipodi:docname="appicon.svg">
+   width="512.0px"
+   height="512.0px"
+   viewBox="0 0 512.0 512.0"
+   version="1.1"
+   id="SVGRoot">
   <defs
      id="defs1450">
     <linearGradient
-       inkscape:collect="always"
-       id="linearGradient2125">
+       id="linearGradient2125"
+       inkscape:collect="always">
       <stop
-         style="stop-color:#000000;stop-opacity:1;"
+         id="stop2121"
          offset="0"
-         id="stop2121" />
+         style="stop-color:#000000;stop-opacity:1;" />
       <stop
-         style="stop-color:#000000;stop-opacity:0;"
+         id="stop2123"
          offset="1"
-         id="stop2123" />
+         style="stop-color:#000000;stop-opacity:0;" />
     </linearGradient>
     <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient2125"
-       id="linearGradient2127"
-       x1="72.03125"
-       y1="501.83594"
-       x2="380.3125"
+       gradientUnits="userSpaceOnUse"
        y2="501.83594"
-       gradientUnits="userSpaceOnUse" />
+       x2="380.3125"
+       y1="501.83594"
+       x1="72.03125"
+       id="linearGradient2127"
+       xlink:href="#linearGradient2125"
+       inkscape:collect="always" />
   </defs>
   <sodipodi:namedview
-     id="base"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageopacity="0.0"
-     inkscape:pageshadow="2"
-     inkscape:zoom="1.07"
-     inkscape:cx="215.42056"
-     inkscape:cy="289.82117"
-     inkscape:document-units="px"
-     inkscape:current-layer="layer1"
-     inkscape:document-rotation="0"
-     showgrid="true"
-     inkscape:window-width="1536"
-     inkscape:window-height="1027"
-     inkscape:window-x="219"
+     inkscape:window-maximized="0"
      inkscape:window-y="25"
-     inkscape:window-maximized="0">
+     inkscape:window-x="219"
+     inkscape:window-height="1027"
+     inkscape:window-width="1536"
+     showgrid="true"
+     inkscape:document-rotation="0"
+     inkscape:current-layer="layer1"
+     inkscape:document-units="px"
+     inkscape:cy="286.08285"
+     inkscape:cx="296.26168"
+     inkscape:zoom="1.07"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base">
     <inkscape:grid
-       id="grid2020"
-       type="xygrid" />
+       type="xygrid"
+       id="grid2020" />
   </sodipodi:namedview>
   <metadata
      id="metadata1453">
@@ -70,53 +70,53 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
   <g
-     inkscape:label="Layer 1"
+     id="layer1"
      inkscape:groupmode="layer"
-     id="layer1">
+     inkscape:label="Layer 1">
     <circle
-       style="fill:none;stroke:#ff0000;stroke-width:15.11811024;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="path2027"
-       cx="289.53271"
+       r="180"
        cy="210.3271"
-       r="180" />
+       cx="289.53271"
+       id="path2027"
+       style="fill:none;stroke:#00ff00;stroke-width:15.11811024;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     <ellipse
-       style="fill:none;stroke:#ff0000;stroke-width:15.11811024;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="path2065"
-       cx="287.99066"
-       cy="210.00002"
+       ry="180"
        rx="90"
-       ry="180" />
+       cy="210.00002"
+       cx="287.99066"
+       id="path2065"
+       style="fill:none;stroke:#00ff00;stroke-width:15.11811024;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     <path
-       style="fill:none;stroke:#ff0000;stroke-width:15.11811024;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path2071"
        d="M 290,390 V 30"
-       id="path2071" />
+       style="fill:none;stroke:#00ff00;stroke-width:15.11811024;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     <path
-       style="fill:none;stroke:#ff0000;stroke-width:15.11811024;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       id="path2073"
        d="M 110,210 H 470"
-       id="path2073" />
+       style="fill:none;stroke:#00ff00;stroke-width:15.11811024;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none" />
     <path
-       style="fill:none;stroke:#ff0000;stroke-width:15.11811024;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       id="path2075"
        d="M 130,130 H 450"
-       id="path2075" />
+       style="fill:none;stroke:#00ff00;stroke-width:15.11811024;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none" />
     <path
-       style="fill:none;stroke:#ff0000;stroke-width:15.11811024;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       id="path2077"
        d="m 130,290 c 40,0 320,0 320,0"
-       id="path2077" />
+       style="fill:none;stroke:#00ff00;stroke-width:15.11811024;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none" />
     <text
-       xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:173.33299999999999841px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#9696ff;fill-opacity:1;stroke:none;"
-       x="41.028038"
+       id="text2081"
        y="472.14954"
-       id="text2081"><tspan
-         sodipodi:role="line"
-         id="tspan2079"
-         x="41.028038"
+       x="41.028038"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:173.33299999999999841px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#9696ff;fill-opacity:1;stroke:none;"
+       xml:space="preserve"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:173.33299255px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#9696ff;fill-opacity:1;"
          y="472.14954"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:173.33299255px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#9696ff;fill-opacity:1;">VPN</tspan></text>
+         x="41.028038"
+         id="tspan2079"
+         sodipodi:role="line">VPN</tspan></text>
   </g>
 </svg>
