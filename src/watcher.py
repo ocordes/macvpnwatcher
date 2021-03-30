@@ -34,6 +34,7 @@ def callback_template(name, func):
 
     return callback
 
+
 def format_string(s, size):
     paragraph = NSMutableParagraphStyle.alloc().init()
     #paragraph.setAlignment_(NSCenterTextAlignment)
@@ -46,9 +47,6 @@ def format_string(s, size):
         NSParagraphStyleAttributeName: paragraph,
     }
     text = NSAttributedString.alloc().initWithString_attributes_(s, attributes)
-
-    #print(text.size())
-
     return text
 
 
@@ -157,14 +155,19 @@ class MacVPNWatcherApp(object):
         self.update_icon()
 
 
-    def update_menu(self):
+    def sleep_detection(self):
         timenow = time.time()
         timediff = timenow - self._last_checked
-        sleep_detected = (timediff > sleep_timeout_trigger) and (self._last_checked != 0)
+        sleep_detected = (timediff > sleep_timeout_trigger) and (
+            self._last_checked != 0)
         if sleep_detected:
             logging.info(f'Sleep > {timediff} seconds detected!')
-            #self._sleep_detected = sleep_detected
             self._ev_awake.state = True
+        self._last_checked = timenow
+
+
+    def update_menu(self):
+        self.sleep_detection()
             
         conns = list_of_vpn_connections()
 
@@ -217,13 +220,17 @@ class MacVPNWatcherApp(object):
         if not self._ev_connected.state:
             if self._last_connection and (conns[self._last_connection]['status'] == 'Disconnected'):
                 # a connection was interrupted
-                logging.warning(f'VPN connection {conn} was interrupted!')
+                logging.warning(f'VPN connection {self._last_connection} was interrupted!')
                 if self._ev_awake.state and (self._ev_awake.changed < sleep_reaction_trigger):
                     # was there an awake event 
-                    logging.info(f'Want to reestablish connection for {conn}!')
+                    logging.warning(f'Want to reestablish connection for {self._last_connection}!')
                     # reconnect
-                    connect_vpn(conn)
+                    connect_vpn(self._last_connection)
                     self._trigger_action = True
+                else:
+                    logging.warning(f'No wakeup detected! Must be another program!')
+                # there is no last connection anymore
+                self._last_connection = None
 
         # clear the awake event
         if self._ev_awake.state and (self._ev_awake.changed >= sleep_reaction_trigger):
@@ -235,8 +242,6 @@ class MacVPNWatcherApp(object):
             logging.info(f'Updating icons ...')
             self.update_icon()
 
-
-        self._last_checked = timenow
 
 
     def update_icon(self):
