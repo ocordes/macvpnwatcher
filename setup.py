@@ -7,13 +7,28 @@ Usage:
 
 from setuptools import setup
 
+from src.config import __version__, __author__, __author_email__
+
+
 APP = ['src/MacVPNWatcher.py']
 DATA_FILES = []
-OPTIONS = {'resources': 'src/icons'}
+OPTIONS = {'resources': 'src/icons',
+           'argv_emulation': True,
+           'iconfile': 'src/icons/appicon.icns',
+           'plist': {
+               'CFBundleShortVersionString': __version__,
+               'LSUIElement': True,
+           },
+           'packages': ['rumps'], }
 
 setup(
     app=APP,
+    name='MacVPNWatcher',
+    version=__version__,
+    author=__author__,
+    author_email=__author_email__,
     data_files=DATA_FILES,
     options={'py2app': OPTIONS},
     setup_requires=['py2app'],
+    install_requires=['rumps']
 )

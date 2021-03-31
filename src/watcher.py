@@ -15,9 +15,13 @@ from AppKit import NSMutableParagraphStyle, NSCenterTextAlignment, NSLineBreakBy
     NSFont, NSForegroundColorAttributeName, NSColor, NSParagraphStyleAttributeName, NSAttributedString, \
     NSString, NSTextTab, NSRightTextAlignment, NSSizeFromString
 
+from config import __version__, __author__, __author_email__
+
 from helper import isDarkMode
 
 from vpn import list_of_vpn_connections, connect_vpn, disconnect_vpn
+
+
 
 
 AppName = 'MacVPNWatcher'
@@ -147,10 +151,17 @@ class MacVPNWatcherApp(object):
                 self._connections.pop(conn)
 
         #self._slider = rumps.SliderMenuItem(dimensions=(180, 30))
-        self.app.menu = [self._menu_items[i] for i in self._menu_items] + [rumps.separator]#+ [self._slider]
+        self._about = rumps.MenuItem('About', callback=self.about_dialog)
+        self.app.menu = [self._about,rumps.separator] + [self._menu_items[i] for i in self._menu_items] + [rumps.separator]#+ [self._slider]
 
         # update the icon
         self.update_icon()
+
+
+    def about_dialog(self, sender):
+        win = rumps.Window(message='Blubber message', title='A Title', default_text='default',
+                           ok=None, cancel=None, dimensions=(320, 160))
+        win.run()
 
 
     def sleep_detection(self):
