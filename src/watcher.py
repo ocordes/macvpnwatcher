@@ -15,11 +15,13 @@ from AppKit import NSMutableParagraphStyle, NSCenterTextAlignment, NSLineBreakBy
     NSFont, NSForegroundColorAttributeName, NSColor, NSParagraphStyleAttributeName, NSAttributedString, \
     NSString, NSTextTab, NSRightTextAlignment, NSSizeFromString
 
-from config import __version__, __author__, __author_email__
+from config import __version__, __author__, __author_email__, __copyright__
 
 from helper import isDarkMode
 
 from vpn import list_of_vpn_connections, connect_vpn, disconnect_vpn
+
+import rumps_ext
 
 
 
@@ -28,6 +30,7 @@ AppName = 'MacVPNWatcher'
 sleep_timeout_trigger  = 60   # minimum must be > 20 seonds
 sleep_reaction_trigger = 60
 
+# debug mode ?!
 #rumps.debug_mode(True)
 
 # mimik a callback_template to feed the connection name 
@@ -159,7 +162,14 @@ class MacVPNWatcherApp(object):
 
 
     def about_dialog(self, sender):
-        win = rumps.Window(message='Blubber message', title='A Title', default_text='default',
+        msg = f"""Version: {__version__}
+        {__copyright__}
+        Autor: {__author__}
+        eMail: {__author_email__}
+
+        Based on Python, rumps and AppKit!
+        """
+        win = rumps_ext.SimpleDialog(message=msg, title=f'About {AppName}',
                            ok=None, cancel=None, dimensions=(320, 160))
         win.run()
 
