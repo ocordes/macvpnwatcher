@@ -2,7 +2,7 @@
 src/watcher.py
 
 written by: Oliver Cordes 2021-03-23
-changed by: Oliver Cordes 2021-03-29
+changed by: Oliver Cordes 2021-03-31
 """
 
 import os, sys
@@ -21,7 +21,7 @@ from vpn import list_of_vpn_connections, connect_vpn, disconnect_vpn
 
 
 AppName = 'MacVPNWatcher'
-sleep_timeout_trigger  = 60
+sleep_timeout_trigger  = 60   # minimum must be > 20 seonds
 sleep_reaction_trigger = 60
 
 #rumps.debug_mode(True)
@@ -77,6 +77,7 @@ class Event(object):
         else:
             self._time = 0
 
+    @property
     def changed(self):
         return time.time() - self._time
 
@@ -96,11 +97,9 @@ class MacVPNWatcherApp(object):
         self._connections = {}
         self._menu_items = {}
         self._menu_maxlen = 0
-        #self._is_connected = None
+
         self._trigger_action = False
         self._last_checked = 0
-        #self._sleep_detected = False
-
         self._last_connection = None
         self._ev_connected = Event()
         self._ev_awake = Event()
@@ -138,7 +137,6 @@ class MacVPNWatcherApp(object):
 
                 # remember the item for which the connection is connected
                 if conns[conn]['status'] == 'Connected':
-                    self._is_connected = conn
                     self._ev_connected.state = True
                     self._last_connection = conn
 
@@ -199,21 +197,9 @@ class MacVPNWatcherApp(object):
                     if self._trigger_action:
                         if conns[conn]["status"] in ('Connected', 'Disconnected'):
                             self._trigger_action = False
-                            #self._sleep_detected = False
                         if conns[conn]['status'] == 'Disconnected' and self._last_connection == conn:
                             self._last_connection = None
-                    #else:
-                    #    logging.warning('VPN status has changed without app trigger!')
-                    #    if (was_connected == conn) and (conns[conn]["status"] == 'Disconnected'):
-                    #        logging.warning(f'VPN connection {conn} was interrupted!')
-                    #        if self._sleep_detected:
-                    #            logging.info(f'Want to reestablish connection for {conn}!')
-                    #            self._sleep_detected = False
-                    #            # reconnect the VPN
-                    #            connect_vpn(conn)
-                    #            self._trigger_action = True
-
-
+                    
         # so the status is:
         # self._last_connection has the old connection
         # self._ev_connected.state shows if connected or not
@@ -221,14 +207,17 @@ class MacVPNWatcherApp(object):
             if self._last_connection and (conns[self._last_connection]['status'] == 'Disconnected'):
                 # a connection was interrupted
                 logging.warning(f'VPN connection {self._last_connection} was interrupted!')
-                if self._ev_awake.state and (self._ev_awake.changed < sleep_reaction_trigger):
-                    # was there an awake event 
-                    logging.warning(f'Want to reestablish connection for {self._last_connection}!')
-                    # reconnect
-                    connect_vpn(self._last_connection)
-                    self._trigger_action = True
-                else:
-                    logging.warning(f'No wakeup detected! Must be another program!')
+                try:
+                    if self._ev_awake.state and (self._ev_awake.changed < sleep_reaction_trigger):
+                        # was there an awake event 
+                        logging.warning(f'Want to reestablish connection for {self._last_connection}!')
+                        # reconnect
+                        connect_vpn(self._last_connection)
+                        self._trigger_action = True
+                    else:
+                         logging.warning(f'No wakeup detected! Must be another program!')
+                except:
+                    logging.exception('exeception occured')
                 # there is no last connection anymore
                 self._last_connection = None
 
