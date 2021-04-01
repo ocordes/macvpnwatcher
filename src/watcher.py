@@ -28,7 +28,7 @@ import rumps_ext
 
 AppName = 'MacVPNWatcher'
 sleep_timeout_trigger  = 60   # minimum must be > 20 seonds
-sleep_reaction_trigger = 60
+sleep_reaction_trigger = 60   # do some updates within some time
 
 # debug mode ?!
 #rumps.debug_mode(True)
@@ -106,6 +106,7 @@ class MacVPNWatcherApp(object):
         self._menu_maxlen = 0
 
         self._trigger_action = False
+        self._trigger_connection = None
         self._last_checked = 0
         self._last_connection = None
         self._ev_connected = Event()
@@ -218,6 +219,7 @@ class MacVPNWatcherApp(object):
                     if self._trigger_action:
                         if conns[conn]["status"] in ('Connected', 'Disconnected'):
                             self._trigger_action = False
+                            self._trigger_connection = None
                         if conns[conn]['status'] == 'Disconnected' and self._last_connection == conn:
                             self._last_connection = None
                     
@@ -235,12 +237,22 @@ class MacVPNWatcherApp(object):
                         # reconnect
                         connect_vpn(self._last_connection)
                         self._trigger_action = True
+                        self._trigger_connection = self._last_connection
+                        self._ev_awake.state = False
                     else:
                          logging.warning(f'No wakeup detected! Must be another program!')
                 except:
                     logging.exception('exeception occured')
                 # there is no last connection anymore
                 self._last_connection = None
+            else:
+                # we saw that some deep wakeups tried to reconnect but were interrupted as well
+                # the result was a disconnected situation
+                if self._trigger_action and self._ev_awake.state:
+                    # deep wake interrupted the reconnection
+                    logging.warning(f'Reconnection was requested but not done! Possible due to deep wake sleep!')
+                    logging.warning(f'Reinitiate reconnection for {self._trigger_connection}!')
+                    connect_vpn(self._trigger_connection)
 
         # clear the awake event
         if self._ev_awake.state and (self._ev_awake.changed >= sleep_reaction_trigger):
@@ -285,6 +297,7 @@ class MacVPNWatcherApp(object):
                 logging.info(f'Connecting {name} ...')
                 connect_vpn(name)
         self._trigger_action = True
+        self._trigger_connection = name
 
 
     def check_status(self, sender):
