@@ -127,3 +127,5 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+scripts/MacVPNWatcher.dmg
+dmg_template/Applications

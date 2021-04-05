@@ -247,12 +247,15 @@ class MacVPNWatcherApp(object):
                 self._last_connection = None
             else:
                 # we saw that some deep wakeups tried to reconnect but were interrupted as well
-                # the result was a disconnected situation
-                if self._trigger_action and self._ev_awake.state:
-                    # deep wake interrupted the reconnection
-                    logging.warning(f'Reconnection was requested but not done! Possible due to deep wake sleep!')
-                    logging.warning(f'Reinitiate reconnection for {self._trigger_connection}!')
-                    connect_vpn(self._trigger_connection)
+                # the result was a disconnected situation also after some wakeups the reconnection
+                # was not done properly, so try to reconnect if status in not 'Connecting'!
+                if self._trigger_action: # and self._ev_awake.state:
+                    if self._connections[self._trigger_connection] == 'Connecting':
+                        logging.warning(f'VPN is reconnecting nothing to be done!')
+                    else:
+                        logging.warning(f'Reconnection was requested but not done! Possible due to deep wake sleep!')
+                        logging.warning(f'Reinitiate reconnection for {self._trigger_connection}!')
+                        connect_vpn(self._trigger_connection)
 
         # clear the awake event
         if self._ev_awake.state and (self._ev_awake.changed >= sleep_reaction_trigger):
