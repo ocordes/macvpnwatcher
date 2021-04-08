@@ -2,7 +2,7 @@
 src/watcher.py
 
 written by: Oliver Cordes 2021-03-23
-changed by: Oliver Cordes 2021-03-31
+changed by: Oliver Cordes 2021-04-08
 """
 
 import os, sys
@@ -68,9 +68,10 @@ def string_size_on_screen(s):
 
 
 class Event(object):
-    def __init__(self):
+    def __init__(self, timeout=None):
         self._state = False
         self._time  = 0
+        self._timeout = timeout
 
     @property
     def state(self):
@@ -88,6 +89,17 @@ class Event(object):
     def changed(self):
         return time.time() - self._time
 
+
+    def valid(self, timeout=None):
+        local_timeout = timeout
+        if local_timeout is None:
+            local_timeout = self._timeout
+
+        past_time = time.time() - self._time
+        if local_timeout:
+            return self._state and (past_time < self._timeout)
+        else:
+            return self._state
 
 
 class MacVPNWatcherApp(object):
@@ -110,7 +122,8 @@ class MacVPNWatcherApp(object):
         self._last_checked = 0
         self._last_connection = None
         self._ev_connected = Event()
-        self._ev_awake = Event()
+        self._ev_awake = Event(timeout=sleep_timeout_trigger)
+        self._ev_reconnected = Event()
 
         # generate the main menu
         self.generate_menu()
@@ -203,6 +216,8 @@ class MacVPNWatcherApp(object):
                     #self._is_connected = conn
                     self._ev_connected.state = True
                     self._last_connection = conn
+                    # reconnection was successful!
+                    self._ev_reconnected.state = False
 
                 # has a connection changed?
                 if self._connections[conn]['status'] != conns[conn]['status']:
@@ -227,16 +242,20 @@ class MacVPNWatcherApp(object):
         # self._last_connection has the old connection
         # self._ev_connected.state shows if connected or not
         if not self._ev_connected.state:
+            try:
+                logging.info(f'States: awake={self._ev_awake.state} awake_valid={self._ev_awake.valid()} reconnect={self._ev_reconnected.valid()} last={self._last_connection} trigger={self._trigger_connection}')
+            except:
+                logging.exception('exeception occured')
             if self._last_connection and (conns[self._last_connection]['status'] == 'Disconnected'):
                 # a connection was interrupted
                 logging.warning(f'VPN connection {self._last_connection} was interrupted!')
                 try:
-                    if self._ev_awake.state and (self._ev_awake.changed < sleep_reaction_trigger):
+                    if self._ev_awake.valid():
                         # was there an awake event 
                         logging.warning(f'Want to reestablish connection for {self._last_connection}!')
                         # reconnect
                         connect_vpn(self._last_connection)
-                        self._trigger_action = True
+                        self._ev_reconnected.state = True
                         self._trigger_connection = self._last_connection
                         self._ev_awake.state = False
                     else:
@@ -249,8 +268,12 @@ class MacVPNWatcherApp(object):
                 # we saw that some deep wakeups tried to reconnect but were interrupted as well
                 # the result was a disconnected situation also after some wakeups the reconnection
                 # was not done properly, so try to reconnect if status in not 'Connecting'!
-                if self._trigger_action: # and self._ev_awake.state:
-                    if self._connections[self._trigger_connection] == 'Connecting':
+
+                # check if we are in the process of reconnection
+                if self._ev_reconnected.valid():
+                    # we are reconnecting
+                    logging.warning(f'VPN status for {self._trigger_connection}: {self._connections[self._trigger_connection]["status"]}')
+                    if self._connections[self._trigger_connection]['status'] == 'Connecting':
                         logging.warning(f'VPN is reconnecting nothing to be done!')
                     else:
                         logging.warning(f'Reconnection was requested but not done! Possible due to deep wake sleep!')
@@ -289,6 +312,7 @@ class MacVPNWatcherApp(object):
 
     def clicked_connection(self, name, sender):
         #print('clicked:', name)
+        logging.info(f'Button for {name} clicked!')
         if name in self._connections:
             if self._connections[name]['status'] == 'Connected':
                 logging.info(f'Disconnecting {name} ...')
