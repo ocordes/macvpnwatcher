@@ -1,5 +1,9 @@
-name: test-actions
-on: [push]
+name: release-action
+on: 
+  push:
+    tags:
+      - 'v*'
+
 jobs:
   build-app:
     runs-on: macos-latest
@@ -23,5 +27,11 @@ jobs:
           pwd
       - name: Test
         run: |
-          echo ${{ github.sha }} > Release.txt
+          echo ${{ github.ref }} > Release.txt
           cat Release.txt
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: scripts/*.dmg
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
