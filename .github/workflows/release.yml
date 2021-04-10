@@ -25,13 +25,14 @@ jobs:
           (cd scripts; ./build_dmg.sh)
           ls scripts/*.dmg
           pwd
-      - name: Test
+      - name: Create release file
         run: |
-          echo ${{ github.ref }} > Release.txt
+          python scripts/changelog2release.py ${{ github.ref }} > Release.txt
           cat Release.txt
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
           files: scripts/*.dmg
+          body_path: Release.txt
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
