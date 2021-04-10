@@ -21,3 +21,7 @@ jobs:
           (cd scripts; ./build_dmg.sh)
           ls scripts/*.dmg
           pwd
+      - name: Test
+        run: |
+          echo ${{ github.sha }} > Release.txt
+          cat Release.txt
