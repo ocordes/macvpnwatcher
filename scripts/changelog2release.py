@@ -6,6 +6,7 @@ reads a CHANGELOG.md and creates a Release file
 """
 
 import sys, os
+import re
 
 def get_releases(filename):
     releases = {}
@@ -38,6 +39,10 @@ def get_releases(filename):
 # main
 if len(sys.argv) > 1:
     release = sys.argv[1]
+    regex = re.compile(r'refs/tags/v(?P<version>[0-9.]+)')
+    m = regex.search(release)
+    if m:
+        release = m.group('version')
 else:
     release = None
 
