@@ -1,0 +1,27 @@
+name: build-dev-action
+on: 
+  push:
+    branches:
+      - develop
+
+jobs:
+  build-app:
+    runs-on: macos-latest
+    env:
+        DYLD_FRAMEWORK_PATH=/usr/local/Caskroom/sparkle/1.26.0
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip 
+          pip install -r requirements.txt
+      - name: Install frameworks and brew apps
+        run: |
+          brew install sparkle@1.26.0
+      - name: Build App
+        run: |
+          python setup.py py2app
