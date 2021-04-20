@@ -8,7 +8,7 @@ jobs:
   build-app:
     runs-on: macos-latest
     env:
-        DYLD_FRAMEWORK_PATH=/usr/local/Caskroom/sparkle/1.26.0
+        DYLD_FRAMEWORK_PATH: /usr/local/Caskroom/sparkle/1.26.0
     steps:
       - uses: actions/checkout@v2
       - name: Install Python
