@@ -7,8 +7,6 @@ on:
 jobs:
   build-app:
     runs-on: macos-latest
-    env:
-        DYLD_FRAMEWORK_PATH: /usr/local/Caskroom/sparkle/1.26.0
     steps:
       - uses: actions/checkout@v2
       - name: Install Python
@@ -21,7 +19,11 @@ jobs:
           pip install -r requirements.txt
       - name: Install frameworks and brew apps
         run: |
-          brew install sparkle@1.26.0
+          brew install sparkle
+          echo "DYLD_FRAMEWORK_PATH=$(ls -d /usr/local/Caskroom/sparkle/*)" >> $GITHUB_ENV
+      - name: Test
+        run: |
+          echo $DYLD_FRAMEWORK_PATH
       - name: Build App
         run: |
-          python setup.py py2app
+          python setup.py py2app -f Sparkle
