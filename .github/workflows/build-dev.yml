@@ -25,6 +25,7 @@ jobs:
         run: |
           brew --prefix
           echo $DYLD_FRAMEWORK_PATH
+          ls $DYLD_FRAMEWORK_PATH
       - name: Build App
         run: |
           python setup.py py2app -f Sparkle
