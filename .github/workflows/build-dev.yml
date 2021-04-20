@@ -23,6 +23,7 @@ jobs:
           echo "DYLD_FRAMEWORK_PATH=$(ls -d /usr/local/Caskroom/sparkle/*)" >> $GITHUB_ENV
       - name: Test
         run: |
+          brew --prefix
           echo $DYLD_FRAMEWORK_PATH
       - name: Build App
         run: |
