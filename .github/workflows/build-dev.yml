@@ -31,4 +31,5 @@ jobs:
           ls $DYLD_FRAMEWORK_PATH
       - name: Build App
         run: |
+          export DYLD_FRAMEWORK_PATH=${{env.DYLD_FRAMEWORK_PATH}}
           python setup.py py2app -f Sparkle
