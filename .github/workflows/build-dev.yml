@@ -24,6 +24,7 @@ jobs:
       - name: Test
         run: |
           brew --prefix
+          export DYLD_FRAMEWORK_PATH=${{env.DYLD_FRAMEWORK_PATH}}
           env
           echo "blubber"
           echo $DYLD_FRAMEWORK_PATH
