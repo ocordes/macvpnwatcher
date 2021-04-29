@@ -32,7 +32,7 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          files: scripts/*.dmg
+          files: scripts/MacVPNWatcher-${{ github.ref }}.dmg
           body_path: Release.txt
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
