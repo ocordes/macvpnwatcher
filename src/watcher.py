@@ -2,11 +2,12 @@
 src/watcher.py
 
 written by: Oliver Cordes 2021-03-23
-changed by: Oliver Cordes 2021-04-09
+changed by: Oliver Cordes 2021-04-29
 """
 
 import os, sys
 import logging
+import logging.handlers
 import time
 
 import rumps
@@ -22,6 +23,7 @@ import config
 from helper import isDarkMode
 
 from vpn import list_of_vpn_connections, connect_vpn, disconnect_vpn
+from rlogging import setup_logging
 
 import rumps_ext
 
@@ -114,12 +116,8 @@ class MacVPNWatcherApp(object):
         # setup the support dir
         self._app_supportdir = rumps.application_support(config.AppName)
 
-        logging.basicConfig(level=logging.DEBUG,
-                            datefmt='%Y-%m-%d %H:%M:%S',
-                            filename=os.path.join(
-                                self._app_supportdir, 'app.log'),
-                            format='%(asctime)s %(levelname)s - %(message)s'
-                            )
+        logger = setup_logging(self._app_supportdir)
+
         logging.debug('App started...')
 
         # read the config file
@@ -131,7 +129,7 @@ class MacVPNWatcherApp(object):
         else:
             level = logging.WARNING
 
-        logging.getLogger().setLevel(level)
+        logger.setLevel(level)
 
         # internal variables
         self._connections = {}
