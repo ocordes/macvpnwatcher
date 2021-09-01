@@ -2,7 +2,7 @@ altgraph==0.17
 autopep8==1.5.7
 macholib==1.15
 modulegraph==0.18
-py2app==0.24
+py2app==0.25
 pycodestyle==2.7.0
 pyobjc-core==7.3
 pyobjc-framework-Cocoa==7.3
