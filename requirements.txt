@@ -3,5 +3,5 @@ macholib==1.15.2
 modulegraph==0.19.2
 py2app==0.26.1
 pyobjc-core==8.1
-pyobjc-framework-Cocoa==8.1
+pyobjc-framework-Cocoa==8.2
 rumps==0.3.0
