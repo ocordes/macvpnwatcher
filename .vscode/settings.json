@@ -1,3 +1,4 @@
 {
-    "python.pythonPath": "/Users/ocordes/virtualenv/vpnwatcher/bin/python"
+    "python.pythonPath": "/Users/ocordes/virtualenv/vpnwatcher/bin/python",
+    "cmake.configureOnOpen": false
 }

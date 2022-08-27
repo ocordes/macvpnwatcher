@@ -2,11 +2,12 @@
 src/rumps_ext.py
 
 written by: Oliver Cordes 2021-03-31
-changed by: Oliver Cordes 2021-03-31
+changed by: Oliver Cordes 2022-08-27
+
 
 """
 
-from rumps.rumps import Response, _require_string_or_none, _require_string, text_type, string_types, _log
+from rumps.rumps import Response, _internal, text_type, string_types, _log
 
 from AppKit import NSAlert
 
@@ -20,7 +21,7 @@ class SimpleDialog(object):
         self._cancel = bool(cancel)
         self._icon = None
 
-        _require_string_or_none(ok)
+        _internal.require_string_or_none(ok)
         if not isinstance(cancel, string_types):
             cancel = 'Cancel' if cancel else None
 
@@ -95,7 +96,7 @@ class SimpleDialog(object):
 
         :param name: the text for a new button. Must be a string.
         """
-        _require_string(name)
+        _internal.require_string(name)
         self._alert.addButtonWithTitle_(name)
 
 
