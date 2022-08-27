@@ -11,10 +11,10 @@ import logging
 
 AppName = 'MacVPNWatcher'
 
-__version__ = '0.1.1'
+__version__ = '0.1.2'
 __author__ = 'Oliver Cordes'
 __author_email__ = 'ocordes@astro.uni-bonn.de'
-__copyright__ = '(C) Copyright 2021'
+__copyright__ = '(C) Copyright 2021,2022'
 
 debug = True
 sleep_timeout_trigger = 60   # minimum must be > 20 seonds

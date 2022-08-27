@@ -9,6 +9,8 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Set env
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
       - name: Install Python
         uses: actions/setup-python@v2
         with:
@@ -32,7 +34,7 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          files: scripts/MacVPNWatcher-${{ github.ref }}.dmg
+          files: scripts/MacVPNWatcher-${{ env.RELEASE_VERSION }}.dmg
           body_path: Release.txt
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
