@@ -1,5 +1,6 @@
-### 0.1.1
+### 0.1.1 2022-08-27
 - add logrotate functionality to the logs
+- update frameworks
 
 ### 0.1.0
 - first version
