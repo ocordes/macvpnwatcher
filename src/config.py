@@ -2,7 +2,7 @@
 src/config.py
 
 written by: Oliver Cordes 2021-03-31
-changed by: Oliver Cordes 2021-04-29
+changed by: Oliver Cordes 2022-08-27
 """
 
 import os
@@ -11,7 +11,7 @@ import logging
 
 AppName = 'MacVPNWatcher'
 
-__version__ = '0.1.2'
+__version__ = '0.1.3'
 __author__ = 'Oliver Cordes'
 __author_email__ = 'ocordes@astro.uni-bonn.de'
 __copyright__ = '(C) Copyright 2021,2022'
