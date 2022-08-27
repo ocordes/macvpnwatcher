@@ -11,7 +11,7 @@ import logging
 
 AppName = 'MacVPNWatcher'
 
-__version__ = '0.1.3'
+__version__ = '0.1.4'
 __author__ = 'Oliver Cordes'
 __author_email__ = 'ocordes@astro.uni-bonn.de'
 __copyright__ = '(C) Copyright 2021,2022'
