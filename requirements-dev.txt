@@ -3,7 +3,7 @@ autopep8==2.0.0
 macholib==1.16.2
 modulegraph==0.19.3
 py2app==0.28.4
-pycodestyle==2.9.1
+pycodestyle==2.10.0
 pyobjc-core==9.0
 pyobjc-framework-Cocoa==9.0
 rumps==0.4.0
